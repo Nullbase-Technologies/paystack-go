@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -34,9 +35,11 @@ func (a *AuthTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 
 type Client struct {
 	c         *http.Client
-	baseUrl   string
 	secretKey string
 	userAgent string
+
+	// exporting this for use in other sub-packages
+	BaseUrl *url.URL
 }
 
 func New(opts ...Option) (*Client, error) {
@@ -49,6 +52,10 @@ func New(opts ...Option) (*Client, error) {
 	if IsStringEmpty(c.secretKey) {
 		return nil, errors.New("please provide a valid secret key")
 	}
+
+	// ignoring err because... what error can come out from a static value :)
+	base, _ := url.Parse(defaultBaseUrl)
+	c.BaseUrl = base
 
 	if IsStringEmpty(c.userAgent) {
 		c.userAgent = defaultUserAgent
@@ -65,7 +72,6 @@ func New(opts ...Option) (*Client, error) {
 	}
 
 	c.secretKey = ""
-	c.baseUrl = defaultBaseUrl
 
 	return c, nil
 }
@@ -86,8 +92,12 @@ func (c *Client) DoRequest(ctx context.Context, method, uri string, body, result
 		}
 	}
 
-	req, err := http.NewRequest(method,
-		fmt.Sprintf("%s/%s", c.baseUrl, uri), buf)
+	u, err := c.BaseUrl.Parse(uri)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest(method, u.String(), buf)
 	if err != nil {
 		return err
 	}
@@ -114,10 +124,7 @@ func (c *Client) DoRequest(ctx context.Context, method, uri string, body, result
 	}
 
 	if res.StatusCode >= http.StatusBadRequest {
-		return fmt.Errorf("paystack-go: request failed, paystack responded with message [%s] and status [%d]",
-			resp.Message,
-			res.StatusCode,
-		)
+		return fmt.Errorf("paystack: %s", resp.Message)
 	}
 
 	if resp.Data != nil && result != nil {

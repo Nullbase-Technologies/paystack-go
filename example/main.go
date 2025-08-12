@@ -11,7 +11,7 @@ import (
 
 func main() {
 	client, err := paystack.New(
-		paystack.WithSecretKey("<your-secret-key-here>"),
+		paystack.WithSecretKey("sk_test_49b3451b3cb0887322e55ece94fb422c4a8c1fb7"),
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -19,15 +19,24 @@ func main() {
 
 	transaction := transactions.New(client)
 
-	initResp, err := transaction.Initialize(context.TODO(), &transactions.InitializeTransactionOptions{
-		Amount: 1000,
-		Email:  "adedaramola@gmail.com",
+	// initResp, err := transaction.Initialize(context.TODO(), &transactions.InitializeTransactionOptions{
+	// 	Amount: 1000,
+	// 	Email:  "adedaramola@gmail.com",
+	// })
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// fmt.Println(initResp.AccessCode)
+	// fmt.Println(initResp.Reference)
+	// fmt.Println(initResp.AuthorizationURL)
+
+	t, err := transaction.List(context.TODO(), &transactions.ListTransactionsParams{
+		Status: "abandoned",
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(initResp.AccessCode)
-	fmt.Println(initResp.Reference)
-	fmt.Println(initResp.AuthorizationURL)
+	fmt.Println(t)
 }
