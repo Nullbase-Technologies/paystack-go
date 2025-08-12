@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/Nullbase-Technologies/paystack-go"
-	"github.com/Nullbase-Technologies/paystack-go/transactions"
+	"github.com/Nullbase-Technologies/paystack-go/customers"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	transaction := transactions.New(client)
+	// transaction := transactions.New(client)
 
 	// initResp, err := transaction.Initialize(context.TODO(), &transactions.InitializeTransactionOptions{
 	// 	Amount: 1000,
@@ -31,12 +31,21 @@ func main() {
 	// fmt.Println(initResp.Reference)
 	// fmt.Println(initResp.AuthorizationURL)
 
-	t, err := transaction.List(context.TODO(), &transactions.ListTransactionsParams{
-		Status: "abandoned",
+	// t, err := transaction.List(context.TODO(), &transactions.ListTransactionsParams{
+	// 	Status: "abandoned",
+	// })
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	customer, err := customers.New(client).Create(context.TODO(), &customers.CreateCustomerOptions{
+		Email:     "paranok2011@gmail.com",
+		FirstName: "Adedaramola",
+		LastName:  "Adetimehin",
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(t)
+	fmt.Println(customer)
 }
