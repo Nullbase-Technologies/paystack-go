@@ -48,6 +48,42 @@ func main() {
 }
 ```
 
+## Webhook Validation
+
+The package also provides a simple helper function to validate incoming paystack webhooks. A use case could be something like below
+
+```go
+func VerifyPaystackSignature(next http.Handler) http.Handler {
+	return http.HandleFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Load paystack secret key from environment
+		// or however you choose to do so, no sha hardcode am!
+		secret := os.Getenv("PAYSTACK_SECRET_KEY")
+
+		signature := r.Header.Get("X-Paystack-Signature")
+
+		bodyBytes, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "failed to read request body", http.StatusInternalServerError)
+			return
+		}
+
+		if err := paystack.VerifyWebhookSignature(
+			bodyBytes, signature, secret); err != nil {
+			// You can type hint the actual invalid webhook error
+			if errors.Is(err, paystack.ErrInvalidPaystackWebhook) {
+				// do whatever you want
+			}
+			// maybe throw an internal server error
+		}
+
+		// everything is good
+		// handle the webhook, however you will of course :)
+
+		next.ServeHTTP(w, r)
+	})
+}
+```
+
 ## SDK Coverage
 
 - [ ] Transactions
@@ -84,4 +120,3 @@ func main() {
 	- [x] List Banks
 	- [ ] List Countries
 	- [ ] List States
-	
