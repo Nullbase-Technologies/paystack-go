@@ -37,9 +37,7 @@ type Client struct {
 	c         *http.Client
 	secretKey string
 	userAgent string
-
-	// exporting this for use in other sub-packages
-	BaseUrl *url.URL
+	baseUrl   *url.URL
 }
 
 func New(opts ...Option) (*Client, error) {
@@ -55,7 +53,7 @@ func New(opts ...Option) (*Client, error) {
 
 	// ignoring err because... what error can come out from a static value :)
 	base, _ := url.Parse(defaultBaseUrl)
-	c.BaseUrl = base
+	c.baseUrl = base
 
 	if IsStringEmpty(c.userAgent) {
 		c.userAgent = defaultUserAgent
@@ -82,7 +80,7 @@ type Response struct {
 	Data    json.RawMessage `json:"data,omitempty"`
 }
 
-func (c *Client) DoRequest(ctx context.Context, method, uri string, body, result any) error {
+func (c *Client) DoRequest(ctx context.Context, method, url string, body, result any) error {
 	var buf io.ReadWriter
 
 	if body != nil {
@@ -92,7 +90,7 @@ func (c *Client) DoRequest(ctx context.Context, method, uri string, body, result
 		}
 	}
 
-	u, err := c.BaseUrl.Parse(uri)
+	u, err := c.baseUrl.Parse(url)
 	if err != nil {
 		return err
 	}
@@ -115,7 +113,9 @@ func (c *Client) DoRequest(ctx context.Context, method, uri string, body, result
 
 		return err
 	}
-	defer res.Body.Close()
+	defer func() {
+		_ = res.Body.Close()
+	}()
 
 	var resp Response
 

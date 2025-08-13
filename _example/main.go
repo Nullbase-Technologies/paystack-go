@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/Nullbase-Technologies/paystack-go"
-	"github.com/Nullbase-Technologies/paystack-go/customers"
+	"github.com/Nullbase-Technologies/paystack-go/miscellaneous"
 )
 
 func main() {
@@ -38,14 +38,20 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 
-	customer, err := customers.New(client).Create(context.TODO(), &customers.CreateCustomerOptions{
-		Email:     "paranok2011@gmail.com",
-		FirstName: "Adedaramola",
-		LastName:  "Adetimehin",
-	})
+	// customer, err := customers.New(client).Create(context.TODO(), &customers.CreateCustomerOptions{
+	// 	Email:     "paranok2011@gmail.com",
+	// 	FirstName: "Adedaramola",
+	// 	LastName:  "Adetimehin",
+	// })
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	misc := miscellaneous.New(client)
+	banks, err := misc.ListBanks(context.TODO(), &miscellaneous.ListBankParams{})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(customer)
+	fmt.Println(banks)
 }

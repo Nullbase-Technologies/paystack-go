@@ -1,10 +1,19 @@
 package paystack
 
+import "time"
+
 type Metadata map[string]interface{}
 
 type Paginator struct {
-	PerPage int64 `url:"perPage,omitempty"`
-	Page    int64 `url:"page,omitempty"`
+	PerPage   int64  `url:"perPage,omitempty"`
+	Page      int64  `url:"page,omitempty"`
+	Previous  string `url:"previous,omitempty"`
+	UseCursor bool   `url:"use_cursor,omitempty"`
+}
+
+type Period struct {
+	From time.Time `url:"from,omitempty"`
+	To   time.Time `url:"from,omitempty"`
 }
 
 type Authorization struct {
