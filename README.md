@@ -116,6 +116,11 @@ func VerifyPaystackSignature(next http.Handler) http.Handler {
 	- [ ] Initialize Direct Debit
 	- [ ] Direct Debit Activation Charge
 	- [ ] Fetch Mandate Authorization
+- [x] Plans
+	- [x] Create Plan
+	- [x] List Plan
+	- [x] Fetch Plan
+	- [x] Update Plan
 - [ ] Miscellaneous
 	- [x] List Banks
 	- [ ] List Countries

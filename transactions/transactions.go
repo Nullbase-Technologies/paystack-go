@@ -89,11 +89,11 @@ func (t *Transactions) ChargeAuthorization(ctx context.Context, opts *ChargeAuth
 	return resp, nil
 }
 
-func (t *Transactions) GetTransactionTimeline(ctx context.Context, idOrRef string) (*TransactionTimeline, error) {
+func (t *Transactions) GetTransactionTimeline(ctx context.Context, ref string) (*TransactionTimeline, error) {
 	resp := new(TransactionTimeline)
 
 	err := t.c.DoRequest(ctx, http.MethodGet,
-		fmt.Sprintf("transaction/timeline/%s", idOrRef), nil, resp)
+		fmt.Sprintf("transaction/timeline/%s", ref), nil, resp)
 	if err != nil {
 		return resp, err
 	}

@@ -19,7 +19,7 @@ type Period struct {
 type Authorization struct {
 	AuthorizationCode string  `json:"authorization_code"`
 	Bin               string  `json:"bin"`
-	LastFour          string  `json:"last4"`
+	Last4             string  `json:"last4"`
 	ExpMonth          string  `json:"exp_month"`
 	ExpYear           string  `json:"exp_year"`
 	Channel           string  `json:"channel"`
