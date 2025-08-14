@@ -51,7 +51,7 @@ type Plan struct {
 		ID               uint64                 `json:"id"`
 	} `json:"subscriptions"`
 	Name              string  `json:"name"`
-	Description       *string `json:"description"`
+	Description       string `json:"description"`
 	Amount            uint64  `json:"amount"`
 	Interval          string  `json:"interval"`
 	Integration       uint64  `json:"integration"`
